@@ -2,7 +2,7 @@ import { SUBREDDIT } from "./config";
 
 // Managed Reddit API (redditapis.com) — used because direct unauthenticated
 // requests from Vercel's IP ranges get a 403 from Reddit's own edge network.
-const MANAGED_API_URL = `https://api.redditapis.com/r/${SUBREDDIT}/about`;
+const MANAGED_API_URL = `https://api.redditapis.com/api/reddit/sub/${SUBREDDIT}/about`;
 const FETCH_TIMEOUT_MS = 8000;
 
 export interface SubscriberReading {
