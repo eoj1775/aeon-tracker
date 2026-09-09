@@ -1,12 +1,34 @@
 import { NextResponse } from "next/server";
+import { getSubscriberCount } from "@/lib/reddit";
+import { getSupabaseServerClient } from "@/lib/supabase";
 
-// This route is intended to be called by a Vercel Cron job once per hour.
-// It will fetch the current subscriber count and write a row to Supabase's
-// subscriber_snapshots table. Not yet wired up — that happens in Stage 3
-// once the Supabase project exists.
+// Called by a Vercel Cron job once per hour. Reads the current subscriber
+// count (reusing the same cached/fallback logic as the main API route —
+// this does NOT make an extra external call if a fresh reading was already
+// fetched recently) and writes a row to Supabase for historical tracking.
 export async function GET() {
-  return NextResponse.json(
-    { error: "Snapshot storage is not configured yet (Stage 3)." },
-    { status: 501 }
-  );
+  try {
+    const reading = await getSubscriberCount();
+
+    const supabase = getSupabaseServerClient();
+    const { error } = await supabase.from("subscriber_snapshots").insert({
+      subscribers: reading.subscribers,
+    });
+
+    if (error) {
+      throw new Error(`Supabase insert failed: ${error.message}`);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      subscribers: reading.subscribers,
+      recordedAt: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.error("[snapshot] failed:", err instanceof Error ? err.message : err);
+    return NextResponse.json(
+      { error: "Snapshot failed", detail: err instanceof Error ? err.message : String(err) },
+      { status: 500 }
+    );
+  }
 }
