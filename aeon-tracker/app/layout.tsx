@@ -8,8 +8,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="en" className="h-full antialiased" style={{ ["--font-mono" as string]: "monospace" }}>
+      <body className="min-h-full flex flex-col">
+        <div className="aeon-vignette" />
+        {children}
+      </body>
     </html>
   );
 }

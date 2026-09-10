@@ -1,26 +1,74 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --aeon-bg: #0a0a08;
+  --aeon-bg-raised: #131310;
+  --aeon-text: #f2f0e6;
+  --aeon-text-dim: rgba(242, 240, 230, 0.55);
+  --aeon-text-faint: rgba(242, 240, 230, 0.28);
+  --aeon-accent: #f0ec42;
+  --aeon-accent-dim: rgba(240, 236, 66, 0.35);
+  --aeon-on-accent: #16160a;
+  --aeon-border: rgba(242, 240, 230, 0.18);
+  --aeon-border-faint: rgba(242, 240, 230, 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--aeon-bg);
+  color: var(--aeon-text);
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+  -webkit-font-smoothing: antialiased;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle CRT grain — low-opacity SVG noise, tiled */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+/* Faint scanlines */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0px,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.35) 3px
+  );
+}
+
+/* Vignette to darken edges slightly, matching a CRT/terminal feel */
+.aeon-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+a {
+  color: inherit;
 }
