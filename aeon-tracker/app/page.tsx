@@ -109,17 +109,16 @@ export default function Home() {
       {/* HEADER */}
       <header
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "start",
           gap: "1.5rem",
           paddingBottom: "clamp(1rem, 3vw, 2rem)",
         }}
       >
         <div style={{ display: "flex", gap: "clamp(1rem, 3vw, 2.5rem)", flexWrap: "wrap" }}>
           <TextStack lines={["PEOPLE", "IDEAS", "CAPITAL", "CULTURE", "CONSCIOUSNESS", "A BRIGHTER", "ALTERNATIVE."]} />
-          <TextStack lines={["SPX6900", "PUBLIC OBSERVATION NODE", "v0.1.0", "", "THERE IS NO CHART."]} />
+          <TextStack lines={["SPX6900", "PUBLIC REDDIT OBSERVATION NODE", "v0.1.0", "", "THERE IS NO CHART."]} />
         </div>
 
         <Image
@@ -127,11 +126,11 @@ export default function Home() {
           alt="SPX6900"
           width={900}
           height={506}
-          style={{ width: "min(46vw, 340px)", height: "auto", filter: "invert(1)" }}
+          style={{ width: "min(46vw, 340px)", height: "auto", filter: "invert(1)", justifySelf: "center" }}
           unoptimized
         />
 
-        <div style={{ display: "flex", gap: "clamp(1rem, 3vw, 2.5rem)", flexWrap: "wrap", alignItems: "flex-start" }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: "clamp(1rem, 3vw, 2.5rem)", flexWrap: "wrap", alignItems: "flex-start" }}>
           <div
             style={{
               background: "var(--aeon-accent)",
@@ -144,7 +143,7 @@ export default function Home() {
               transform: "rotate(1deg)",
             }}
           >
-            THE SYSTEM WAS NOT DESIGNED FOR US.
+            FLIP THE STOCK MARKET.
           </div>
         </div>
       </header>
