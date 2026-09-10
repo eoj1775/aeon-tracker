@@ -16,7 +16,11 @@ interface SubscribersResponse {
 
 const POLL_INTERVAL_MS = 5 * 60 * 1000;
 
-function ProgressBlock({ percent, columns = 40, rows = 7 }: { percent: number; columns?: number; rows?: number }) {
+const GRID_COLUMNS = 40;
+const GRID_ROWS = 7;
+const GRID_TOTAL_DOTS = GRID_COLUMNS * GRID_ROWS;
+
+function ProgressBlock({ percent, columns = GRID_COLUMNS, rows = GRID_ROWS }: { percent: number; columns?: number; rows?: number }) {
   const filledColumns = Math.round((percent / 100) * columns);
   const cellPercent = 100 / columns;
   const dots: boolean[] = [];
@@ -128,7 +132,6 @@ export default function Home() {
         />
 
         <div style={{ display: "flex", gap: "clamp(1rem, 3vw, 2.5rem)", flexWrap: "wrap", alignItems: "flex-start" }}>
-          <TextStack lines={["INTERNET", "FOREVER", "MMXXVI"]} align="right" />
           <div
             style={{
               background: "var(--aeon-accent)",
@@ -225,7 +228,7 @@ export default function Home() {
               >
                 <span style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
                   <span style={{ width: 9, height: 9, borderRadius: "50%", background: "var(--aeon-accent)", display: "inline-block" }} />
-                  = 1 PERSON
+                  ≈ {Math.round(data.target / GRID_TOTAL_DOTS).toLocaleString()} PEOPLE
                 </span>
                 <span>{data.percentComplete.toFixed(2)}% COMPLETE</span>
               </div>
@@ -252,15 +255,11 @@ export default function Home() {
                   letterSpacing: "0.03em",
                 }}
               >
-                [ JOIN THE MOVEMENT &nearr; ]
+                [ JOIN THE MOVEMENT ↗ ]
               </a>
 
               <div style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)", marginTop: "1rem", letterSpacing: "0.05em" }}>
                 REDIRECT // reddit.com/r/spx6900
-              </div>
-
-              <div style={{ fontSize: "clamp(0.8rem, 1.3vw, 1rem)", fontWeight: 700, marginTop: "2rem" }}>
-                THE PEOPLE ARE THE SIGNAL.
               </div>
             </>
           )}
