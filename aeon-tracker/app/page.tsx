@@ -18,8 +18,8 @@ const POLL_INTERVAL_MS = 5 * 60 * 1000;
 
 // Overlay regions, measured as percentages against the locked 1536x1024
 // background artwork. Do not adjust the artwork — only these boxes move.
-const NUMBER_BOX = { left: 28.6, right: 71.6, top: 37.6, bottom: 55.2 };
-const DOTS_BOX = { left: 27.0, right: 73.9, top: 57.6, bottom: 75.7 };
+const NUMBER_BOX = { left: 28.6, right: 71.6, top: 37.8, bottom: 50.0 };
+const DOTS_BOX = { left: 27.0, right: 73.9, top: 58.8, bottom: 75.5 };
 const BUTTON_BOX = { left: 35.2, right: 65.1, top: 76.2, bottom: 83.0 };
 
 function pct(box: { left: number; right: number; top: number; bottom: number }) {
@@ -32,27 +32,34 @@ function pct(box: { left: number; right: number; top: number; bottom: number }) 
 }
 
 function DotGrid({ percent, columns = 42, rows = 8 }: { percent: number; columns?: number; rows?: number }) {
-  const total = columns * rows;
-  const filled = Math.round((percent / 100) * total);
-  const dots = Array.from({ length: total }, (_, i) => i < filled);
+  const filledColumns = Math.round((percent / 100) * columns);
+  const cellPercent = 100 / columns;
+  const dots: boolean[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns; c++) {
+      dots.push(c < filledColumns);
+    }
+  }
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: `repeat(${columns}, 1fr)`,
-        gap: "min(0.6cqw, 4px)",
-        width: "100%",
-      }}
-    >
+    <div style={{ display: "flex", flexWrap: "wrap", width: "100%" }}>
       {dots.map((isFilled, i) => (
         <div
           key={i}
           style={{
-            aspectRatio: "1 / 1",
-            borderRadius: "50%",
-            background: isFilled ? "#f0ec42" : "rgba(255,255,255,0.14)",
+            width: `${cellPercent}%`,
+            padding: "0.25cqw",
+            boxSizing: "border-box",
           }}
-        />
+        >
+          <div
+            style={{
+              width: "100%",
+              paddingTop: "100%",
+              borderRadius: "50%",
+              background: isFilled ? "#f0ec42" : "rgba(255,255,255,0.14)",
+            }}
+          />
+        </div>
       ))}
     </div>
   );
@@ -115,6 +122,8 @@ export default function Home() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%)",
           }}
         >
           {data ? (
@@ -147,6 +156,8 @@ export default function Home() {
             flexDirection: "column",
             justifyContent: "center",
             gap: "1.2cqw",
+            maskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
           }}
         >
           <DotGrid percent={data?.percentComplete ?? 0} />
