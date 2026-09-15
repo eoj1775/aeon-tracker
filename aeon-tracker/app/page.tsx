@@ -263,23 +263,10 @@ export default function Home() {
                 </span>
                 {!data.pace || data.pace.insufficientData ? (
                   <span style={{ fontSize: "clamp(0.85rem, 1.4vw, 1.05rem)", fontWeight: 700 }}>GATHERING PACE DATA…</span>
-                ) : data.pace.dailyRate > 0 ? (
-                  <>
-                    <span style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 800, color: "var(--aeon-accent)" }}>
-                      ~{Math.round(data.pace.dailyRate).toLocaleString()}/DAY
-                    </span>
-                    <span style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)" }}>
-                      LAST {Math.round(data.pace.windowDays)} DAYS
-                      {data.pace.projectedDate && <> &nbsp;•&nbsp; EST. {formatDdMmYyyy(new Date(data.pace.projectedDate))}</>}
-                    </span>
-                  </>
                 ) : (
-                  <>
-                    <span style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 800 }}>~0/DAY</span>
-                    <span style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)" }}>
-                      LAST {Math.round(data.pace.windowDays)} DAYS &nbsp;•&nbsp; NOT ENOUGH GROWTH TO PROJECT
-                    </span>
-                  </>
+                  <span style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 800, color: "var(--aeon-accent)" }}>
+                    ~{Math.max(0, Math.round(data.pace.dailyRate)).toLocaleString()}/DAY
+                  </span>
                 )}
               </div>
 
