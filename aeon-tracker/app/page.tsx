@@ -3,6 +3,14 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 
+interface PaceInfo {
+  dailyRate: number;
+  windowDays: number;
+  sampleCount: number;
+  projectedDate: string | null;
+  insufficientData: boolean;
+}
+
 interface SubscribersResponse {
   subscribers: number;
   target: number;
@@ -12,9 +20,15 @@ interface SubscribersResponse {
   daysRemaining: number;
   fetchedAt: string;
   stale: boolean;
+  pace: PaceInfo | null;
 }
 
 const POLL_INTERVAL_MS = 5 * 60 * 1000;
+
+function formatDdMmYyyy(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(d.getUTCDate())}.${pad(d.getUTCMonth() + 1)}.${d.getUTCFullYear()}`;
+}
 
 const GRID_COLUMNS = 40;
 const GRID_ROWS = 7;
@@ -230,6 +244,43 @@ export default function Home() {
                   ≈ {Math.round(data.target / GRID_TOTAL_DOTS).toLocaleString()} PEOPLE
                 </span>
                 <span>{data.percentComplete.toFixed(2)}% COMPLETE</span>
+              </div>
+
+              <div
+                style={{
+                  marginTop: "1.75rem",
+                  padding: "0.85rem 1.5rem",
+                  border: "1px solid var(--aeon-accent)",
+                  display: "inline-flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "0.3rem",
+                  fontFamily: "var(--font-mono), monospace",
+                }}
+              >
+                <span style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)", letterSpacing: "0.08em" }}>
+                  GROWTH PACE
+                </span>
+                {!data.pace || data.pace.insufficientData ? (
+                  <span style={{ fontSize: "clamp(0.85rem, 1.4vw, 1.05rem)", fontWeight: 700 }}>GATHERING PACE DATA…</span>
+                ) : data.pace.dailyRate > 0 ? (
+                  <>
+                    <span style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 800, color: "var(--aeon-accent)" }}>
+                      ~{Math.round(data.pace.dailyRate).toLocaleString()}/DAY
+                    </span>
+                    <span style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)" }}>
+                      LAST {Math.round(data.pace.windowDays)} DAYS
+                      {data.pace.projectedDate && <> &nbsp;•&nbsp; EST. {formatDdMmYyyy(new Date(data.pace.projectedDate))}</>}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span style={{ fontSize: "clamp(1.2rem, 2.2vw, 1.6rem)", fontWeight: 800 }}>~0/DAY</span>
+                    <span style={{ fontSize: "clamp(0.65rem, 1vw, 0.8rem)", color: "var(--aeon-text-dim)" }}>
+                      LAST {Math.round(data.pace.windowDays)} DAYS &nbsp;•&nbsp; NOT ENOUGH GROWTH TO PROJECT
+                    </span>
+                  </>
+                )}
               </div>
 
               {data.stale && (
